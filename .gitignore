@@ -1,0 +1,8 @@
+# Compiled source #
+##################*
+out/
+.next/
+
+# Node modules #
+###############0
+node_modules/
