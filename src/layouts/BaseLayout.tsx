@@ -1,8 +1,14 @@
-function BaseLayout({ children }) {
+import { ReactNode } from 'react';
+
+interface BaseProps {
+  children?: ReactNode;
+}
+
+function BaseLayout({ children }: BaseProps) {
   return (
-    <main>
+    <div>
       {children}
-    </main>
+    </div>
   );
 }
 
