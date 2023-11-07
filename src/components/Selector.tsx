@@ -1,7 +1,7 @@
 import { Select } from '@chakra-ui/react';
 
 interface SelectorTypes {
-  options: [string];
+  options: string[];
 }
 
 function Selector({
@@ -10,7 +10,7 @@ function Selector({
   return (
     <Select>
       {options?.map((option) => (
-        <option value={option}>{option}</option>
+        <option key={option} value={option}>{option}</option>
       ))}
     </Select>
   );

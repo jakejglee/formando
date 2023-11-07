@@ -6,10 +6,9 @@ import BaseLayout from '../layouts/BaseLayout';
 import theme from '../theme/theme';
 
 export default function FormandoRoot({ Component, pageProps }: AppProps) {
-  const getLayout = Component.getLayout || ((page) => page);
   return (
     <ChakraProvider theme={theme}>
-      <BaseLayout>{getLayout(<Component {...pageProps} />)}</BaseLayout>
+      <BaseLayout><Component {...pageProps} /></BaseLayout>
     </ChakraProvider>
   );
 };
