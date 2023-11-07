@@ -2,7 +2,7 @@ import { Select } from '@chakra-ui/react';
 
 interface SelectorTypes {
   options: string[];
-  setSelection: () => void;
+  setSelection: (arg0: number) => void;
 }
 
 function Selector({
@@ -10,11 +10,11 @@ function Selector({
   setSelection
 }: SelectorTypes) {
   return (
-    <Select onChange={(e) => setSelection(e.target.value)}>
-      {options?.map((option) => (
+    <Select onChange={(e) => setSelection(Number(e.target.value))}>
+      {options.map((option, index) => (
         <option
-          key={option}
-          value={option}
+          key={index}
+          value={index}
         >
           {option}
         </option>

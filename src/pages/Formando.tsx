@@ -1,23 +1,36 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import Formulator from '../components/Formulator';
 import Selector from '../components/Selector';
+import Formulator from '../components/formandos/Formulator';
+import GCC from '../components/formandos/GCC';
 
 function Formando() {
   const options = [
-    "Hi",
-    "nub"
-  ]
-  const [selection, setSelection] = useState(options[0]);
+    'Formando',
+    'GCC',
+  ];
+  const [selection, setSelection] = useState(0);
+  // TODO(nubby): make this better.
+  const renderOption = useCallback((index: number) => {
+    switch(options[index]) {
+      case 'Formando':
+        return <Formulator />
+        break;
+      case 'GCC':
+        return <GCC />;
+        break;
+      default:
+        return <p>Hi nub</p>;
+    }
+  }, []);
+
   return (
     <div>
       <Selector
         options={options}
         setSelection={setSelection}
       />
-      <Formulator
-        selection={selection}
-      />
+      {renderOption(selection)}
     </div>
   );
 }
