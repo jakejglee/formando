@@ -1,7 +1,13 @@
-function Formulator() {
+interface FormulatorTypes {
+  selection: string;
+}
+
+function Formulator({
+  selection
+}: FormulatorTypes) {
   return (
     <div>
-      Beep boop beep.
+      Beep boop beep. You chose {selection}.
     </div>
   );
 }

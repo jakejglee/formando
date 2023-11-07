@@ -2,15 +2,22 @@ import { Select } from '@chakra-ui/react';
 
 interface SelectorTypes {
   options: string[];
+  setSelection: () => void;
 }
 
 function Selector({
-  options
+  options,
+  setSelection
 }: SelectorTypes) {
   return (
-    <Select>
+    <Select onChange={(e) => setSelection(e.target.value)}>
       {options?.map((option) => (
-        <option key={option} value={option}>{option}</option>
+        <option
+          key={option}
+          value={option}
+        >
+          {option}
+        </option>
       ))}
     </Select>
   );

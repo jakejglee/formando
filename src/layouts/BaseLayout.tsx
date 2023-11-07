@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+
+import { Grid } from '@chakra-ui/react';
 
 interface BaseProps {
   children?: ReactNode;
@@ -6,9 +8,15 @@ interface BaseProps {
 
 function BaseLayout({ children }: BaseProps) {
   return (
-    <div>
+    <Grid
+      h="full"
+      justifyContent="center"
+      pt={14}
+      px={10}
+      zIndex={1}
+    >
       {children}
-    </div>
+    </Grid>
   );
 }
 
