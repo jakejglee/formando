@@ -52,11 +52,11 @@ function Formulator() {
     let success = true;
     try {
       if (Object.keys(attempt).length == Object.keys(answers).length) {
-        Object.keys(attempt).forEach((attkey) => {
-          success = (success && (attempt[attkey] == answers[attkey]))
+        Object.keys(attempt).forEach((key) => {
+          success = (success && (attempt[key] == answers[key as keyof FormShape]))
         });
-        Object.keys(answers).forEach((ankey) => {
-          success = (success && (attempt[ankey] == answers[ankey]))
+        Object.keys(answers).forEach((key) => {
+          success = (success && (attempt[key] == answers[key as keyof FormShape]))
         })
       }
     } catch (e) {
@@ -69,7 +69,6 @@ function Formulator() {
     match ? 
       victory() :
       defeat();
-    reset();
   }
   
   const handleFoolishClick = () => {
