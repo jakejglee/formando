@@ -1,3 +1,4 @@
+// TODO: Why is Formulator only able to be submit after its result differs from the previous one?
 import { useRef, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -28,6 +29,9 @@ function Formulator() {
     foolish: yup.boolean(),
   });
   const [foolish, setFoolish] = useState(false);
+  const initialForm = {
+    foolish: false,
+  }
   const {
     formState: { isDirty, isValid },
     handleSubmit,
@@ -35,9 +39,7 @@ function Formulator() {
     reset,
     setValue,
   } = useForm<FieldValues>({
-    defaultValues: {
-      foolish: foolish
-    },
+    defaultValues: initialForm,
     resolver: yupResolver(schema),
   });
 
@@ -46,6 +48,12 @@ function Formulator() {
   }
   const victory = () => {
     console.log('BOOP');
+  }
+
+  const resetForm = () => {
+    reset();
+    // TODO(nubby): Make this better too.
+    setFoolish(initialForm.foolish);
   }
 
   const _checkFormulations = (attempt: FieldValues, answers: FormShape) => {
@@ -69,6 +77,7 @@ function Formulator() {
     match ? 
       victory() :
       defeat();
+    resetForm();
   }
   
   const handleFoolishClick = () => {
