@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useRef, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
@@ -24,18 +24,19 @@ const answers = {
 
 function Formulator() {
   const toast = useToast();
-
   const schema = yup.object().shape({
     foolish: yup.boolean(),
   });
+  const [foolish, setFoolish] = useState(false);
   const {
-    register,
-    reset,
     formState: { isDirty, isValid },
     handleSubmit,
+    register,
+    reset,
+    setValue,
   } = useForm<FieldValues>({
     defaultValues: {
-      foolish: false
+      foolish: foolish
     },
     resolver: yupResolver(schema),
   });
@@ -48,35 +49,54 @@ function Formulator() {
   }
 
   const _checkFormulations = (attempt: FieldValues, answers: FormShape) => {
-    console.log(attempt,answers);
-    return false;
-  }
-  const onSubmit = () => {
-    (attempt: FieldValues) => {
-      const match = _checkFormulations(attempt, answers);
-      match ? 
-        victory() :
-        defeat();
+    let success = true;
+    try {
+      if (Object.keys(attempt).length == Object.keys(answers).length) {
+        Object.keys(attempt).forEach((attkey) => {
+          success = (success && (attempt[attkey] == answers[attkey]))
+        });
+        Object.keys(answers).forEach((ankey) => {
+          success = (success && (attempt[ankey] == answers[ankey]))
+        })
+      }
+    } catch (e) {
+      return false;
     }
+    return success;
+  }
+  const onSubmit = (attempt: FieldValues) => {
+    const match = _checkFormulations(attempt, answers);
+    match ? 
+      victory() :
+      defeat();
+    reset();
   }
   
-  const handleFoolishClick = (e: object) => {
-    console.log('handling a foolish click: ',e);
+  const handleFoolishClick = () => {
+    // TODO(nubby): There has to be a way to combine state. /':
+    setValue('foolish', !foolish);
+    setFoolish(!foolish);
   }
 
   return (
     <form id="formulator" onSubmit={handleSubmit(onSubmit)}>
-      <Grid>
+      <Grid
+        columnGap={24}
+      >
         <GridItem>
           <Button onClick={handleFoolishClick} {...register("foolish")}>
-            whHWat?
+            ???
+          </Button>
+        </GridItem>
+        <GridItem>
+          Beep boop beep. You chose something.
+        </GridItem>
+        <GridItem>
+          <Button type="submit">
+            SUBMIT RESPONSE
           </Button>
         </GridItem>
       </Grid>
-      Beep boop beep. You chose something.
-      <Button type="submit">
-        Hi.
-      </Button>
     </form>
   );
 }
