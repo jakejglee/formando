@@ -6,14 +6,14 @@ import GCC from '../components/formandos/GCC';
 
 function Formando() {
   const options = [
-    'Formando',
+    'Formulator',
     'GCC',
   ];
   const [selection, setSelection] = useState(0);
   // TODO(nubby): make this better.
   const renderOption = useCallback((index: number) => {
     switch(options[index]) {
-      case 'Formando':
+      case 'Formulator':
         return <Formulator />
         break;
       case 'GCC':
