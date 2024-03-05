@@ -13,6 +13,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
+import ControlledArray from '../ControlledArray/ControlledArray';
 
 interface FormShape {
   foolish: boolean;
@@ -33,6 +34,7 @@ function Formulator() {
     foolish: false,
   }
   const {
+    control,
     formState: { isDirty, isValid },
     handleSubmit,
     register,
@@ -95,6 +97,12 @@ function Formulator() {
           <Button onClick={handleFoolishClick} {...register("foolish")}>
             ???
           </Button>
+        </GridItem>
+        <GridItem>
+          <ControlledArray
+            control={control}
+            name="many-things"
+          />
         </GridItem>
         <GridItem>
           Beep boop beep. You chose something.
