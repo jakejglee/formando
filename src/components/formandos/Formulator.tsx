@@ -19,6 +19,10 @@ interface FormShape {
   foolish: boolean;
 }
 
+const defaults = {
+  hi: true
+}
+
 // ANSWERS:
 const answers = {
   foolish: true,
