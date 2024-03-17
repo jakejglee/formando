@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Control,
   useController,
-  UseControllerProps,
 } from 'react-hook-form';
 import {
   CheckIcon
@@ -18,24 +17,24 @@ import {
 import ArrayElement from './ArrayElement';
 import ArrayElementsWrapper from './ArrayElementsWrapper';
 
-interface IControlledArrayInput {
+
+interface IControlledArray {
   control: Control;
   name: string;
-  options?: Array<string> | undefined;
-  required?: boolean | undefined;
+  required?: boolean;
 }
-
+interface IElement {
+  value: string;
+  id: number;
+}
 
 let UID = 0;
 
 function ControlledArray({
   control,
   name,
-  options,
   required,
-}: UseControllerProps<IControlledArrayInput>) {
-  const [runningArray, setRunningArray] = useState<Array>([]);
-  const [pendingInput, setPendingInput] = useState<string>("");
+}: IControlledArray) {
   const {
     field,
     fieldState,
@@ -45,7 +44,16 @@ function ControlledArray({
     name,
     rules: { required: required }
   });
+  const [runningArray, setRunningArray] = useState<IElement[]>([]);
+  const [pendingInput, setPendingInput] = useState<string>("");
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // TODO(nubby): add live searching of options.
+    setPendingInput(e.target.value);
+  }
+  const handleElementDelete = (id: number) => {
+    setRunningArray(runningArray.filter(v => v.id != id));
+  }
   const handleElementAdd = () => {
     setPendingInput("");
     setRunningArray([
@@ -57,13 +65,6 @@ function ControlledArray({
     ]);
     UID++;
     field.onChange();
-  }
-  const handleElementDelete = (id: number) => {
-    setRunningArray(runningArray.filter(v => v.id != id));
-  }
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TODO(nubby): add live searching of options.
-    setPendingInput(e.target.value);
   }
 
   return (

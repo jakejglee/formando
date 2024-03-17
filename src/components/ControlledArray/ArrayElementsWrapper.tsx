@@ -8,7 +8,7 @@ import {
 
 interface IArrayElementsWrapper {
   children: React.ReactNode;
-  isWrapped: boolean;
+  isWrapped?: boolean;
 }
 
 function ArrayElementsWrapper ({

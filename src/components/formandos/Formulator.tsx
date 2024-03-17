@@ -1,4 +1,3 @@
-// TODO: Why is Formulator only able to be submit after its result differs from the previous one?
 import { useRef, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';

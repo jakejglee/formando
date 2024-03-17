@@ -1,0 +1,35 @@
+import {
+  Control,
+  useController,
+} from 'react-hook-form';
+
+
+interface IControlledArray {
+  control: Control;
+  name: string;
+  required: boolean;
+}
+
+function ControlledArray({
+  control,
+  name,
+  required,
+}: IControlledArray) {
+  const {
+    field,
+    fieldState,
+    formState,
+  } = useController({
+    control,
+    name,
+    rules: { required: required }
+  });
+
+  return (
+    <div>
+      Hi nub.
+    </div>
+  );
+}
+
+export default ControlledArray;
