@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import {
   Control,
+  FieldArrayWithId,
+  FieldValues,
   useController,
+  UseControllerProps,
+  useFieldArray,
+  UseFieldArrayProps,
+  useForm,
+  useWatch,
 } from 'react-hook-form';
 import {
   CheckIcon
@@ -11,6 +18,8 @@ import {
   HStack,
   IconButton,
   Input,
+  List,
+  ListItem,
   VStack,
 } from '@chakra-ui/react';
 
@@ -21,82 +30,111 @@ import ArrayElementsWrapper from './ArrayElementsWrapper';
 interface IControlledArray {
   control: Control;
   name: string;
-  required?: boolean;
-}
+  rules?: FieldValues | undefined;
+};
+interface IError {
+  message: string;
+  type: "minLength";
+};
 interface IElement {
   value: string;
-  id: number;
-}
-
-let UID = 0;
+  id: string;
+};
 
 function ControlledArray({
   control,
   name,
-  required,
+  rules,
 }: IControlledArray) {
   const {
-    field,
-    fieldState,
-    formState,
-  } = useController({
+    fields,
+    append,
+    remove
+  }: {
+    fields: IElement[];
+    append: (obj: object | object[]) => void;
+    remove: (index?: number | number[]) => void;
+  } = useFieldArray({
     control,
-    name,
-    rules: { required: required }
+    name: name,
+    rules: rules
   });
-  const [runningArray, setRunningArray] = useState<IElement[]>([]);
   const [pendingInput, setPendingInput] = useState<string>("");
+  const [errors, setErrors] = useState<IError[]>([]);
 
+  // Parse user input-focused rules here.
+  // TODO(nubby): improve elegance pls.
+  const minInputLength = rules?.input?.minLength ?? 0;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO(nubby): add live searching of options.
     setPendingInput(e.target.value);
   }
   const handleElementDelete = (id: number) => {
-    setRunningArray(runningArray.filter(v => v.id != id));
+    remove(id);
   }
-  const handleElementAdd = () => {
-    setPendingInput("");
-    setRunningArray([
-      ...runningArray,
-      {
-        value: pendingInput,
-        id: UID,
+  const handleElementAdd = (value: string) => {
+    console.log(value);
+    if (value.length >= minInputLength) {
+      append({ value: value })
+      setErrors([]);
+    } else {
+      if (!errors.find(e => e.type === "minLength")) {
+        setErrors([
+          ...errors,
+          {
+            type: "minLength",
+            message: `Must be longer than ${minInputLength} characters.`,
+          }
+        ]);
       }
-    ]);
-    UID++;
-    field.onChange();
+    }
   }
+  const printErrors = () => {
+    if (errors != undefined) {
+      return (
+        <List>
+          {errors.map((e) => <ListItem key={e.type}>{e.message}</ListItem>)}
+        </List>
+      );
+    }
+  }
+
+  const {
+    register,
+    handleSubmit
+  } = useForm();
+  console.log("fields",fields);
 
   return (
     <Box>
       <VStack>
         <ArrayElementsWrapper>
-          {runningArray?.map((e, index) => {
-            console.log(e.id, e.value);
+          {fields?.map((f, index) => {
+            console.log("field",f.value);
             return (
               <ArrayElement
-                id={e.id}
-                key={e.id}
-                value={e.value}
-                onDelete={handleElementDelete}
+                id={f.id}
+                key={index}
+                value={f.value}
+                onDelete={() => handleElementDelete(index)}
               />
-            )
-          })}
+            )}
+          )}
+          
         </ArrayElementsWrapper>
         <HStack>
           <Input
-            {...field}
-            onChange={handleChange}
-            onBlur={field.onBlur}
-            ref={field.ref}
-            value={pendingInput}
+            {...register("userInput")}
           />
           <IconButton
             aria-label="add-val"
             icon={<CheckIcon />}
-            onClick={handleElementAdd}
+            onClick={handleSubmit((data) => (
+              handleElementAdd(data["userInput"])
+            ))}
           />
         </HStack>
+        {printErrors()}
       </VStack>
     </Box>
   );

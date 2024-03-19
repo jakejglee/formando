@@ -10,39 +10,53 @@ import {
   Grid,
   GridItem,
   useToast,
+  VStack,
 } from '@chakra-ui/react';
 
 import ControlledArray from '../ControlledArray/ControlledArray';
 
-interface FormShape {
+interface FormValues {
   foolish: boolean;
+  manyThings: string[];
 }
 
 const defaults = {
-  hi: true
+  foolish: true,
+  manyThings: [],
 }
 
 // ANSWERS:
 const answers = {
   foolish: true,
+  manyThings: [
+    "hi",
+    "nub",
+  ],
 }
 
 function Formulator() {
   const toast = useToast();
   const schema = yup.object().shape({
     foolish: yup.boolean(),
+    manyThings: yup.array()
+    .of(yup.object({
+      value: yup.string()
+    }))
+    .min(1, "This is required.")
   });
   const [foolish, setFoolish] = useState(false);
   const initialForm = {
     foolish: false,
+    manyThings: [],
   }
   const {
     control,
-    formState: { isDirty, isValid },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     register,
     reset,
     setValue,
+    
   } = useForm<FieldValues>({
     defaultValues: initialForm,
     resolver: yupResolver(schema),
@@ -61,15 +75,15 @@ function Formulator() {
     setFoolish(initialForm.foolish);
   }
 
-  const _checkFormulations = (attempt: FieldValues, answers: FormShape) => {
+  const _checkFormulations = (attempt: FieldValues, answers: FormValues) => {
     let success = true;
     try {
       if (Object.keys(attempt).length == Object.keys(answers).length) {
         Object.keys(attempt).forEach((key) => {
-          success = (success && (attempt[key] == answers[key as keyof FormShape]))
+          success = (success && (attempt[key] == answers[key as keyof FormValues]))
         });
         Object.keys(answers).forEach((key) => {
-          success = (success && (attempt[key] == answers[key as keyof FormShape]))
+          success = (success && (attempt[key] == answers[key as keyof FormValues]))
         })
       }
     } catch (e) {
@@ -78,6 +92,7 @@ function Formulator() {
     return success;
   }
   const onSubmit = (attempt: FieldValues) => {
+    console.log(attempt);
     const match = _checkFormulations(attempt, answers);
     match ? 
       victory() :
@@ -90,6 +105,14 @@ function Formulator() {
     setValue('foolish', !foolish);
     setFoolish(!foolish);
   }
+
+  const printErrors = () => {
+      return (
+        <Box>
+          Hi nub.
+        </Box>
+      );
+    }
 
   return (
     <form id="formulator" onSubmit={handleSubmit(onSubmit)}>
@@ -104,7 +127,10 @@ function Formulator() {
         <GridItem>
           <ControlledArray
             control={control}
-            name="many-things"
+            name="manyThings"
+            rules={{ input: {
+              minLength: 6,
+            }}}
           />
         </GridItem>
         <GridItem>
@@ -115,6 +141,9 @@ function Formulator() {
             SUBMIT RESPONSE
           </Button>
         </GridItem>
+          <GridItem>
+            {printErrors()}
+          </GridItem>
       </Grid>
     </form>
   );

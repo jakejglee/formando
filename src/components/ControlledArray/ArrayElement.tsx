@@ -10,9 +10,9 @@ import {
 
 
 interface IArrayElement {
-  id: number;
+  id: string;
   value: string;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 function ArrayElement({
